@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "244032314647",
+    "project_id": "highput-app",
+    "storage_bucket": "highput-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244032314647:android:30b691738a63b8f4c8eb52",
+        "android_client_info": {
+          "package_name": "me.kerdo.highput"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244032314647-2ncne21o9eu97nkbir5oofpg3n7d3ovs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.kerdo.highput",
+            "certificate_hash": "a7684f0f80106e37d27e8ceb2f62c0608613b827"
+          }
+        },
+        {
+          "client_id": "244032314647-ck2hv59mt4u5krj0pgid3eajbg6pamrb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASQmYY4B2Dd58W_jZiFjD7fQdNdoSU7oQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "244032314647-ck2hv59mt4u5krj0pgid3eajbg6pamrb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
