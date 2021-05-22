@@ -14,6 +14,6 @@ class ResetPasswordView extends StatelessWidget {
           child: Text('back'),
         ),
       ),
-    )
+    );
   }
 }

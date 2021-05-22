@@ -1,9 +1,10 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:highput/models/auth_response.dart';
 
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-Future<String> signInWithGoogle() async {
+Future<AuthResponse> signInWithGoogle() async {
   try {
     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
@@ -16,21 +17,21 @@ Future<String> signInWithGoogle() async {
 
     await FirebaseAuth.instance.signInWithCredential(credential);
 
-    return 'Signed in!';
+    return AuthResponse(false, 'Signed in!');
   } on FirebaseAuthException catch (e) {
-    return e.message ?? 'Error signing in with Google';
+    return AuthResponse(false, e.message ?? 'Error signing in');
   }
 }
 
-Future<String> signInWithEmailAndPassword({
+Future<AuthResponse> signInWithEmailAndPassword({
   required String email,
   required String password,
 }) async {
   try {
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
-    return 'Signed in!';
+    return AuthResponse(false, 'Signed in!');
   } on FirebaseAuthException catch (e) {
-    return e.message ?? 'Error signing in';
+    return AuthResponse(true, e.message ?? 'Error signing in');
   }
 }

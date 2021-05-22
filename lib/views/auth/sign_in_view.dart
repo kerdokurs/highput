@@ -20,12 +20,6 @@ class SignInView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               verticalDirection: VerticalDirection.up,
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 0,
-                  ),
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -120,7 +114,16 @@ class SignInView extends StatelessWidget {
                     final status = await signInWithEmailAndPassword(
                         email: email, password: password);
 
-                    print(status);
+                    if (status.error) {
+                      // TODO: Display error
+                      return;
+                    }
+
+                    final snackBar = SnackBar(
+                      content: Text(status.message),
+                      backgroundColor: Colors.black87.withOpacity(0.75),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
                     emailController.clear();
                     passwordController.clear();
@@ -169,13 +172,13 @@ class SignInView extends StatelessWidget {
                     horizontal: 0,
                   ),
                 ),
-                Text(
-                  'Login',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 28,
-                  ),
-                ),
+                // Text(
+                //   'Login',
+                //   textAlign: TextAlign.left,
+                //   style: TextStyle(
+                //     fontSize: 28,
+                //   ),
+                // ),
               ],
             ),
           ),
