@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:highput/models/todo_board.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:highput/views/task_view.dart';
 import 'package:highput/widgets.dart';
-
-import 'account_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -35,6 +32,7 @@ class HomeView extends StatelessWidget {
                             .collection('users')
                             .doc(FirebaseAuth.instance.currentUser!.uid)
                             .collection('boards')
+                            .orderBy('created_at', descending: true)
                             .withConverter(
                               fromFirestore: (snapshot, _) =>
                                   TodoBoard.fromJson(snapshot.data()!),
@@ -50,6 +48,12 @@ class HomeView extends StatelessWidget {
                           }
 
                           final cards = <TaskCard>[];
+
+                          if(snapshot.data!.docs.length == 0) {
+                            return Center(
+                              child: Text('No todo boards'),
+                            );
+                          }
 
                           snapshot.data!.docs.forEach((doc) {
                             final board = doc.data();

@@ -26,14 +26,12 @@ class _TaskViewState extends State<TaskView> {
   final TextEditingController descriptionController = TextEditingController();
 
   StreamSubscription<QuerySnapshot<Todo>>? subscription;
-  bool _loading = true;
   List<TaskTodo> _todos = List.empty();
 
   void setTodos(List<TaskTodo> todos) {
     if (!mounted) return;
 
     setState(() {
-      _loading = false;
       _todos = todos;
     });
   }
@@ -44,6 +42,12 @@ class _TaskViewState extends State<TaskView> {
       titleController.text = board!.title;
       descriptionController.text = board.description;
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (subscription != null) subscription!.cancel();
   }
 
   @override
@@ -63,7 +67,7 @@ class _TaskViewState extends State<TaskView> {
           )
           .doc();
 
-      widget.ref!.set(TodoBoard('Untitled', ''));
+      widget.ref!.set(TodoBoard('Untitled', '', DateTime.now()));
     }
 
     widget.ref!.get().then((value) {
@@ -73,6 +77,8 @@ class _TaskViewState extends State<TaskView> {
 
     subscription = widget.ref!
         .collection('todos')
+        .orderBy('isDone')
+        .orderBy('created_at', descending: true)
         .withConverter(
           fromFirestore: (snapshot, _) => Todo.fromJson(snapshot.data()!),
           toFirestore: (Todo model, _) => model.toJson(),
@@ -88,20 +94,6 @@ class _TaskViewState extends State<TaskView> {
         setTodos(todos);
       },
     );
-
-    // final snapshot = await widget.ref
-    //     .collection('todos')
-    //     .withConverter(
-    //       fromFirestore: (snapshot, _) => Todo.fromJson(snapshot.data()!),
-    //       toFirestore: (Todo model, _) => model.toJson(),
-    //     )
-    //     .get();
-    //
-    // List<Todo> todos = List.generate(
-    //   snapshot.docs.length,
-    //   (i) => snapshot.docs[i].data(),
-    // );
-    // setTodos(todos);
   }
 
   @override
@@ -209,10 +201,82 @@ class _TaskViewState extends State<TaskView> {
                   ),
                 ),
               ),
+              Positioned(
+                bottom: 100.0,
+                right: 0.0,
+                child: Container(
+                  width: 60.0,
+                  height: 60.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: Colors.green,
+                  ),
+                  child: IconButton(
+                    color: Colors.white,
+                    icon: Icon(Icons.add),
+                    iconSize: 32.0,
+                    onPressed: () async {
+                      await newTask(context, widget.ref!);
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+Future<void> newTask(BuildContext context, DocumentReference<TodoBoard> ref) {
+  String content = '';
+
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    // dialog is dismissible with a tap on the barrier
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Enter new task'),
+        content: new Row(
+          children: [
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                decoration: new InputDecoration(
+                  labelText: 'Task contenet',
+                  hintText: 'Finish homework',
+                ),
+                onChanged: (value) {
+                  content = value;
+                },
+              ),
+            )
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            child: Text('Ok'),
+            onPressed: () async {
+              if (content.isEmpty) return;
+
+              await ref.collection('todos').add({
+                'content': content,
+                'isDone': false,
+                'created_at': FieldValue.serverTimestamp(),
+              });
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

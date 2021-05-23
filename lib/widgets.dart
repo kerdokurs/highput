@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:highput/views/task_view.dart';
@@ -74,30 +75,49 @@ class TaskTodo extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            margin: EdgeInsets.only(
-              right: 12.0,
-            ),
-            padding: EdgeInsets.all(2.0),
-            decoration: BoxDecoration(
-                color: todo.isDone ? Colors.green : Colors.transparent,
-                borderRadius: BorderRadius.circular(6.0),
-                border: Border.all(
-                  color: todo.isDone ? Colors.green : Colors.black,
-                )),
-            child: Icon(
-              Icons.done,
-              size: 16.0,
-              color: todo.isDone ? Colors.white : Colors.transparent,
+            child: Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                    right: 12.0,
+                  ),
+                  padding: EdgeInsets.all(2.0),
+                  decoration: BoxDecoration(
+                    color: todo.isDone ? Colors.green : Colors.transparent,
+                    borderRadius: BorderRadius.circular(6.0),
+                    border: Border.all(
+                      color: todo.isDone ? Colors.green : Colors.black,
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: 16.0,
+                    height: 16.0,
+                    child: IconButton(
+                      padding: EdgeInsets.all(0),
+                      onPressed: () async {
+                        await ref.update({
+                          'isDone': !todo.isDone,
+                        });
+                      },
+                      icon: Icon(
+                        Icons.done,
+                        size: 16.0,
+                        color: todo.isDone ? Colors.white : Colors.transparent,
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  todo.content,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: todo.isDone ? Color(0xff211551) : Color(0xff98929d),
+                    fontWeight: todo.isDone ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
-          Text(
-            todo.content,
-            style: TextStyle(
-              fontSize: 16.0,
-              color: todo.isDone ? Color(0xff211551) : Color(0xff98929d),
-              fontWeight: todo.isDone ? FontWeight.w600 : FontWeight.w500,
-            ),
-          )
         ],
       ),
     );
