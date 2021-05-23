@@ -108,9 +108,3 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-
-// FirebaseFirestore.instance
-//     .collection('users')
-// .doc('jWVLMaoQBtauhHjmZqiy1jO4qA62')
-// .collection('boards')
-// .snapshots(),

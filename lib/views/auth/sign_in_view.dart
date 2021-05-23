@@ -110,11 +110,11 @@ class SignInView extends StatelessWidget {
                       return;
                     }
 
-                    final snackBar = SnackBar(
-                      content: Text(status.message),
-                      backgroundColor: Colors.black87.withOpacity(0.75),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    // final snackBar = SnackBar(
+                    //   content: Text(status.message),
+                    //   backgroundColor: Colors.black87.withOpacity(0.75),
+                    // );
+                    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
                     emailController.clear();
                     passwordController.clear();

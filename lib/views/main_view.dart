@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'account_view.dart';
 import 'goals_view.dart';
 import 'home_view.dart';
+import 'notifications_view.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MainView extends StatefulWidget {
   MainView({Key? key}) : super(key: key);
@@ -34,7 +37,7 @@ class _HomePageState extends State<MainView> {
             index: _currentPage,
             children: [
               HomeView(),
-              HomeView(),
+              NotificationsView(),
               GoalsView(),
               AccountView(),
             ],
@@ -47,32 +50,34 @@ class _HomePageState extends State<MainView> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             buildNavigationElement(
-              "Home",
-              Icons.house_outlined,
+              "Tasks",
+              Icons.assignment_outlined,
               _currentPage == 0 ? activeIconSize : iconSize,
               () => {_updatePage(0)},
               _currentPage == 0 ? Colors.black87 : Colors.black54,
             ),
             buildNavigationElement(
-              "Timer",
-              Icons.timer_outlined,
+              "Reminders",
+              Icons.access_time_outlined,
               _currentPage == 1 ? activeIconSize : iconSize,
               () => {_updatePage(1)},
               _currentPage == 1 ? Colors.black87 : Colors.black54,
             ),
+            // buildNavigationElement(
+            //   "Logs",
+            //   Icons.calendar_today_outlined,
+            //   _currentPage == 2 ? activeIconSize : iconSize,
+            //   () => {_updatePage(2)},
+            //   _currentPage == 2 ? Colors.black87 : Colors.black54,
+            // ),
             buildNavigationElement(
-              "Logs",
-              Icons.calendar_today_outlined,
+              "Logout",
+              Icons.exit_to_app,
               _currentPage == 2 ? activeIconSize : iconSize,
-              () => {_updatePage(2)},
+              () async {
+                await signOut();
+              },
               _currentPage == 2 ? Colors.black87 : Colors.black54,
-            ),
-            buildNavigationElement(
-              "Account",
-              Icons.account_circle_outlined,
-              _currentPage == 3 ? activeIconSize : iconSize,
-              () => {_updatePage(3)},
-              _currentPage == 3 ? Colors.black87 : Colors.black54,
             ),
           ],
         ),
@@ -93,4 +98,10 @@ IconButton buildNavigationElement(String text, IconData iconData, double size,
     tooltip: text,
     splashRadius: 0.01,
   );
+}
+
+Future<void> signOut() async {
+  await FirebaseMessaging.instance.deleteToken();
+  // TODO: Remove the token from db
+  await FirebaseAuth.instance.signOut();
 }

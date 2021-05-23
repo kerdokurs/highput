@@ -11,12 +11,15 @@ export const newUser = functions
   .onCreate(async (user) => {
     const { displayName, email, uid } = user;
 
-    await firestore.collection('users').doc(uid).set({
-      uid,
-      email,
-      displayName,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    await firestore.collection('users').doc(uid).set(
+      {
+        uid,
+        email,
+        displayName,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
 
     const board = firestore
       .collection('users')

@@ -37,7 +37,7 @@ class TaskCard extends StatelessWidget {
             Text(
               board.title,
               style: TextStyle(
-                color: Color(0xff211551),
+                color: Colors.black87,
                 fontSize: 22.0,
                 fontWeight: FontWeight.bold,
               ),
@@ -119,6 +119,93 @@ class TaskTodo extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ReminderCard extends StatelessWidget {
+  final TextEditingController timeController = TextEditingController();
+
+  final String title;
+  final String time;
+  final DocumentReference ref;
+
+  ReminderCard(this.title, this.time, this.ref);
+
+  @override
+  Widget build(BuildContext context) {
+    timeController.text = time;
+
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        margin: EdgeInsets.only(bottom: 20.0),
+        padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 24.0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 2.0),
+                  child: SizedBox(
+                    width: 50,
+                    child: TextField(
+                      onEditingComplete: () async {
+                        final time = timeController.text.trim();
+                        final pieces = time.split(':');
+                        final now = DateTime.now();
+
+                        try {
+                          int hour = int.tryParse(pieces[0]) ?? now.hour;
+                          int minute = int.tryParse(pieces[1]) ?? now.minute;
+
+                          if (hour < 0 ||
+                              hour > 24 ||
+                              minute < 0 ||
+                              minute > 60) {
+                            //TODO: Error
+                            return;
+                          }
+
+                          await ref.update({
+                            'time': hour.toString() + ':' + minute.toString(),
+                          });
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                      controller: timeController,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            IconButton(
+              onPressed: () async {
+                await ref.delete();
+              },
+              iconSize: 28.0,
+              color: Colors.redAccent,
+              icon: Icon(Icons.delete),
+            ),
+          ],
+        ),
       ),
     );
   }

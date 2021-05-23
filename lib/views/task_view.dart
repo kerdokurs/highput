@@ -239,13 +239,13 @@ Future<void> newTask(BuildContext context, DocumentReference<TodoBoard> ref) {
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text('Enter new task'),
-        content: new Row(
+        content: Row(
           children: [
-            new Expanded(
-              child: new TextField(
+            Expanded(
+              child: TextField(
                 autofocus: true,
-                decoration: new InputDecoration(
-                  labelText: 'Task contenet',
+                decoration: InputDecoration(
+                  labelText: 'Task content',
                   hintText: 'Finish homework',
                 ),
                 onChanged: (value) {
@@ -263,7 +263,7 @@ Future<void> newTask(BuildContext context, DocumentReference<TodoBoard> ref) {
             child: Text('Cancel'),
           ),
           TextButton(
-            child: Text('Ok'),
+            child: Text('OK'),
             onPressed: () async {
               if (content.isEmpty) return;
 

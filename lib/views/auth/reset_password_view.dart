@@ -17,6 +17,7 @@ class ResetPasswordView extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
+                      iconSize: 20.0,
                       onPressed: () {
                         Navigator.pop(context);
                       },

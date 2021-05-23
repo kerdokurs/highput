@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:highput/services/notifications.dart';
 import 'package:highput/views/auth/sign_in_view.dart';
 import 'package:highput/views/main_view.dart';
 
@@ -25,7 +26,12 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
   void initState() {
     super.initState();
 
-    FirebaseAuth.instance.authStateChanges().listen((user) {
+    FirebaseAuth.instance.authStateChanges().listen((user) async {
+      if (user != null) {
+        setupMessaging();
+        final token = await getToken();
+        print(token);
+      }
       updateLoggedIn(user != null);
     });
   }
