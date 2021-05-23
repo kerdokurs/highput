@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:highput/services/auth.dart';
+import 'package:highput/views/auth/reset_password_view.dart';
 import 'package:highput/views/auth/sign_up_view.dart';
 
 class SignInView extends StatelessWidget {
@@ -43,7 +44,7 @@ class SignInView extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignUpView(),
+                            builder: (context) => ResetPasswordView(),
                           ),
                         );
                       },
@@ -63,17 +64,7 @@ class SignInView extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () async {
-                    // final auth = Provider.of<AuthService>(
-                    //   context,
-                    //   listen: false,
-                    // );
-                    // final resp = await auth.signInWithEmailAndPassword(
-                    //   email: emailController.text.trim(),
-                    //   password: passwordController.text.trim(),
-                    // );
-                    // print(resp);
-                    // emailController.clear();
-                    // passwordController.clear();
+                    await signInWithGoogle();
                   },
                   child: Text('Log in with Google'),
                   style: TextButton.styleFrom(
@@ -112,7 +103,7 @@ class SignInView extends StatelessWidget {
                     if (email.isEmpty || password.isEmpty) return;
 
                     final status = await signInWithEmailAndPassword(
-                        email: email, password: password);
+                        email, password);
 
                     if (status.error) {
                       // TODO: Display error

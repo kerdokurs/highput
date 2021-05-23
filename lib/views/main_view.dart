@@ -27,6 +27,7 @@ class _HomePageState extends State<MainView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
           top: false,
           child: IndexedStack(
@@ -39,6 +40,7 @@ class _HomePageState extends State<MainView> {
             ],
           )),
       bottomNavigationBar: Container(
+        color: Colors.white,
         height: 60.0,
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -48,28 +50,28 @@ class _HomePageState extends State<MainView> {
               "Home",
               Icons.house_outlined,
               _currentPage == 0 ? activeIconSize : iconSize,
-                  () => {_updatePage(0)},
+              () => {_updatePage(0)},
               _currentPage == 0 ? Colors.black87 : Colors.black54,
             ),
             buildNavigationElement(
               "Timer",
               Icons.timer_outlined,
               _currentPage == 1 ? activeIconSize : iconSize,
-                  () => {_updatePage(1)},
+              () => {_updatePage(1)},
               _currentPage == 1 ? Colors.black87 : Colors.black54,
             ),
             buildNavigationElement(
               "Logs",
               Icons.calendar_today_outlined,
               _currentPage == 2 ? activeIconSize : iconSize,
-                  () => {_updatePage(2)},
+              () => {_updatePage(2)},
               _currentPage == 2 ? Colors.black87 : Colors.black54,
             ),
             buildNavigationElement(
               "Account",
               Icons.account_circle_outlined,
               _currentPage == 3 ? activeIconSize : iconSize,
-                  () => {_updatePage(3)},
+              () => {_updatePage(3)},
               _currentPage == 3 ? Colors.black87 : Colors.black54,
             ),
           ],
@@ -89,6 +91,6 @@ IconButton buildNavigationElement(String text, IconData iconData, double size,
       color: color,
     ),
     tooltip: text,
+    splashRadius: 0.01,
   );
 }
-

@@ -23,15 +23,38 @@ Future<AuthResponse> signInWithGoogle() async {
   }
 }
 
-Future<AuthResponse> signInWithEmailAndPassword({
-  required String email,
-  required String password,
-}) async {
+Future<AuthResponse> signInWithEmailAndPassword(
+  String email,
+  String password,
+) async {
   try {
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     return AuthResponse(false, 'Signed in!');
   } on FirebaseAuthException catch (e) {
     return AuthResponse(true, e.message ?? 'Error signing in');
+  }
+}
+
+Future<AuthResponse> signUpWithEmailAndPassword(
+  String email,
+  String password,
+) async {
+  try {
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password);
+
+    return signInWithEmailAndPassword(email, password);
+  } on FirebaseAuthException catch (e) {
+    return AuthResponse(true, e.message ?? 'Error signing up');
+  }
+}
+
+Future<AuthResponse> resetPassword(String email) async {
+  try {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    return AuthResponse(false, 'Password reset link sent to email $email');
+  } on FirebaseAuthException catch (e) {
+    return AuthResponse(true, e.message ?? 'Error resetting password');
   }
 }

@@ -1,58 +1,112 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:highput/todo_board.dart';
+import 'package:highput/models/todo_board.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:highput/views/task_view.dart';
+import 'package:highput/widgets.dart';
+
+import 'account_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Padding(
-          //   padding: EdgeInsets.symmetric(
-          //     horizontal: 0,
-          //     vertical: 200,
-          //   ),
-          // ),
-          // Container(
-          //   color: Colors.blue,
-          //   child: Text(
-          //     'Good morning, Kerdo!',
-          //     style: Theme.of(context).textTheme.headline6,
-          //     textAlign: TextAlign.left,
-          //   ),
-          // ),
-          Center(
-            child: Container(
-              height: 200,
-              alignment: Alignment.centerLeft,
-              child: ListView.separated(
-                itemCount: 5,
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 0,
-                ),
-                itemBuilder: (context, i) {
-                  return TodoBoard();
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    width: 10,
-                  );
-                },
-                // scrollDirection: Axis.horizontal,
-              ),
-            ),
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          color: Color(0xfff6f6f6),
+          width: double.infinity,
+          padding: EdgeInsets.only(
+            top: 24.0,
+            left: 24.0,
+            right: 24.0,
           ),
-        ],
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: StreamBuilder<QuerySnapshot<TodoBoard>>(
+                        stream: FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .collection('boards')
+                            .withConverter(
+                              fromFirestore: (snapshot, _) =>
+                                  TodoBoard.fromJson(snapshot.data()!),
+                              toFirestore: (TodoBoard model, _) =>
+                                  model.toJson(),
+                            )
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          final cards = <TaskCard>[];
+
+                          snapshot.data!.docs.forEach((doc) {
+                            final board = doc.data();
+
+                            cards.add(
+                              TaskCard(
+                                board: board,
+                                ref: doc.reference,
+                              ),
+                            );
+                          });
+
+                          return ScrollConfiguration(
+                            behavior: ScrollBehavior(),
+                            child: ListView(
+                              children: cards,
+                            ),
+                          );
+                        }),
+                  )
+                ],
+              ),
+              Positioned(
+                bottom: 24.0,
+                right: 0,
+                child: Container(
+                  width: 60.0,
+                  height: 60.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: Colors.green,
+                  ),
+                  child: IconButton(
+                    color: Colors.white,
+                    icon: Icon(Icons.add),
+                    iconSize: 32.0,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TaskView(null, null),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
+
+// FirebaseFirestore.instance
+//     .collection('users')
+// .doc('jWVLMaoQBtauhHjmZqiy1jO4qA62')
+// .collection('boards')
+// .snapshots(),
