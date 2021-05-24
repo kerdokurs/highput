@@ -55,7 +55,6 @@ class _TaskViewState extends State<TaskView> {
     super.initState();
 
     if (widget.board == null) {
-      print('test');
       widget.ref = FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser!.uid)
